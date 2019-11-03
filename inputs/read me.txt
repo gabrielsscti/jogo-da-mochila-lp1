@@ -1,0 +1,6 @@
+Formato de leitura:
+
+n_itens cap_mochila
+
+l_i ... l_n
+p_i ... p_n
