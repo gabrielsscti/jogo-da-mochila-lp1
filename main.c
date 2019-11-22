@@ -1,5 +1,7 @@
 #include <stdio.h>
+#include <math.h>
 #include <stdlib.h>
+#include <limits.h>
 #include <locale.h>
 
 #define debug() printf("kappa")
@@ -63,7 +65,6 @@ void start(){
 
     }
 }
-
 int main(){
     printf("%s", setlocale(LC_ALL, ""));
     
