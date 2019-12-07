@@ -114,6 +114,7 @@ int isItemEscolhido(int *itensEscolhidos, int tamanhoEscolhidos, int itemProcura
         if(*(itensEscolhidos+i)==itemProcurado)
             return 1;
     }
+		free(itensEscolhidos);
     return 0;
 }
 
@@ -121,10 +122,34 @@ int getScore(Item* data, int* itensEscolhidos, int quantItensEscolhidos){
     int score = 0;
     for(int i=0; i<quantItensEscolhidos; i++)
         score += (data+(*(itensEscolhidos+i)))->valor;
-    return score;
-    
+    return score;   
 }
-
+//ideias para a função de salvar o score
+/*
+int saveScore(){
+	static tam=1;
+	int *ptr_vector_score;
+	ptr_vector_score = (int *)malloc(sizeof(int));
+	ptr_vector_score[tam]= getScore();
+	FILE*records;
+	records=fopen("\inputs\records.txt","w");
+	fprint(ptr_vector_score[tam]);
+	tam++;
+	fclose(records);
+	free(ptr_vector_score);
+}
+*/
+/*
+int ordenateRecords(){
+	int tam;
+	FILE*records;
+	records=fopen("\inputs\records.txt","r");
+	char *ptr_ordnt_score;
+	ptr_ordnt_score=(int*)malloc(sizeof(int));
+	fgets(ptr_ordnt_score,sizeof(ptr_ordnt_score),records);
+	//codigo de ordenar vetor
+}
+*/
 Item * getArq(int fase)
 {
     FILE *arq;
