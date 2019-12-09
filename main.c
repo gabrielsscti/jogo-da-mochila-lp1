@@ -4,7 +4,7 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <locale.h>
-#define debug() printf("kappa\n")
+//#define debug() printf("kappa\n")
 
 typedef struct
 {
@@ -212,6 +212,10 @@ void blankLine()
     printf("\n\n");
 }
 
+void erro(){
+    printf("Erro\n");
+}
+
 int selecionarFase()
 {
     int fase = 0;
@@ -222,5 +226,6 @@ int selecionarFase()
         scanf("%d", &fase);
         if (fase >= 0 && fase <= 5)
             return fase;
+        else erro();
     }
 }
