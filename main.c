@@ -4,7 +4,11 @@
 #include <stdlib.h>
 #include <limits.h>
 #include <locale.h>
-//#define debug() printf("kappa\n")
+#include <time.h>
+#define max(a, b) (a>b ? (a) : (b))
+#define debug() printf("kappa\n")
+
+int **dp;
 
 typedef struct
 {
@@ -22,6 +26,12 @@ void printArq(Item*);
 int isItemEscolhido(int*, int, int);
 int getPesoFromData(Item*, int);
 int getScore(Item*, int*, int);
+int *getRecords();
+int *ordenarRecords(int *,int );
+void registraScore(int );
+int dpSolve(int, int, Item*);
+void showHighScores();
+
 
 int selecionarFase();
 
@@ -31,6 +41,52 @@ int main()
     start();
 }
 
+int isOtima(int chance){
+    srand((unsigned) time(NULL));
+    if(chance<=((rand()%100)+1))
+        return 1;
+    return 0;
+}
+
+int getProbability(int difficulty){
+    if(difficulty==1)
+        return 50;
+    if(difficulty==2)
+        return 75;
+    if(difficulty==3)
+        return 95;
+}
+
+int gulosoSolve(Item *itens){
+    int r = 0, peso=0;
+    for(int i=0; i<numItens; i++){
+        int largerValor = -1, largerId;
+        for(int j=0; j<numItens; j++){
+            if(i!=j){
+                if(itens[j].valor > largerValor){
+                    largerValor = itens[j].valor;
+                    largerId = j;
+                }
+            }
+        }
+        if(peso+itens[largerId].peso>tamMochila)
+            break;
+        peso += itens[largerId].peso;
+        r += itens[largerId].valor;
+        itens[largerId].valor = -10;
+    }
+    return r;
+}
+
+int dpSolve(int id, int peso, Item *itens){
+    if(peso==0 || id==numItens)
+        return 0;
+    if(dp[id][peso]!=-1)
+        return dp[id][peso];
+    if(itens[id].peso>peso)
+        return dp[id][peso] = dpSolve(id+1, peso, itens);
+    return dp[id][peso] = max(dpSolve(id+1, peso, itens), itens[id].valor+dpSolve(id+1, peso-itens[id].peso, itens));
+}
 
 void start()
 {
@@ -38,24 +94,26 @@ void start()
     while (op != 0)
     {
         printf("\nSeleciona uma opção:\n");
-        printf("1. Jogar\t2. Inteligência Artificial\t0. Sair\n");
+        printf("1. Jogar\t2. Inteligência Artificial\t3. High scores\t0. Sair\n");
         scanf("%d", &op);
         if (op != 0)
         {
-            int fase = selecionarFase();
+            int fase;
+            if(op!=3)
+                fase = selecionarFase();
             if (fase != 0)
             {
-                Item *dadosFase = getArq(fase);
-                if (op == 1)
-                {
+                Item *dadosFase;
+                if(op!=3)
+                    Item *dadosFase = getArq(fase);
+                if (op == 1){
                     int escolha=-1, weightLeft = tamMochila, quantItensEscolhidos=0;
                     int *itensEscolhidos = NULL;
-					//int scoret=getScore(dadosFase, itensEscolhidos, quantItensEscolhidos);
-                    //printf("scoret: %d\n",scoret);
                     while(escolha!=0 && weightLeft!=0){
                         printArq(dadosFase);
-                        //printf("\nPeso sobrando: %d\t Pontuação Atual: %d\n", weightLeft,scoret);
-                        printf("Escolha um item de 1 à %d (digite 0 para encerrar gameplay)\n", numItens);
+                        printf("\nPeso sobrando: %d\n", weightLeft);
+                        printf("Seu score: %d\n", getScore(dadosFase,itensEscolhidos, quantItensEscolhidos));
+                        printf("\nEscolha um item de 1 à %d (digite 0 para encerrar gameplay)\n", numItens);
                         scanf("%d", &escolha);
                         if(escolha!=0){
                             if(!isItemEscolhido(itensEscolhidos, quantItensEscolhidos, escolha-1)){
@@ -77,16 +135,14 @@ void start()
                             }else{
                                 clearScreen();
                                 printf("Item %d já foi escolhido. Escolha outro!\n", escolha);
-                            }/*
-                                for(int i=0;i<quantItensEscolhidos;i++) printf("%d",itensEscolhidos[i]);
-                                printf("%d",quantItensEscolhidos);
-                                */
+                            }
                         }
                         
                     }
-
+                    int score = getScore(dadosFase, itensEscolhidos, quantItensEscolhidos);
 					//printf("Pontuação Total: %d\n",scoret);
-                    printf("score: %d\n", getScore(dadosFase, itensEscolhidos, quantItensEscolhidos));
+                    printf("score: %d\n", score);
+                    registraScore(score);
 					//if (scoret>highscore) registraScore(scoret);
                     //Mostra o score, salva no arquivo records.txt, se for um recorde
                 }
@@ -96,15 +152,23 @@ void start()
                     printf("\nSelecione uma dificuldade:\n");
                     printf("1. Fácil\t2. Médio\t3. Difícil\t0. Sair\n");
                     scanf("%d", &dificuldade);
-                    printf("Roda probabilidade para decidir se será usada a solução ótima...\n");
-                    if (1)
+                    if (!isOtima(getProbability(dificuldade)))
                     { //Solução ótima
-                        printf("Roda programação dinâmica\n");
+                        dp = (int**)malloc(sizeof(int*)*(numItens+1));
+                        for(int i=0; i<numItens+1; i++)
+                            *(dp+i) = (int*)malloc((sizeof(int)*(tamMochila+10)));
+                        for(int i=0; i<numItens+1; i++){
+                            for(int j=0; j<tamMochila+10; j++)
+                                dp[i][j] = -1;
+                        }
+                        printf("Resultado: R$%d\n", dpSolve(0, tamMochila, dadosFase));
                     }
-                    else
-                    {
-                        printf("Roda outra solução\n");
+                    else{
+                        printf("Resultado: %d\n", gulosoSolve(dadosFase));
                     }
+                }
+                else if(op == 3){
+                    showHighScores();
                 }
             }
         }
@@ -122,7 +186,6 @@ int isItemEscolhido(int *itensEscolhidos, int tamanhoEscolhidos, int itemProcura
         if(*(itensEscolhidos+i)==itemProcurado)
             return 1;
     }
-		free(itensEscolhidos);
     return 0;
 }
 
@@ -167,21 +230,30 @@ Item * getArq(int fase)
     fclose(arq);
     return itens;
 }
-/*
-int getRecords(int *v, int tam)
-{
-    FILE *arq;
-    arq = fopen("./inputs/records.txt", "r");
-    if (arq == NULL) printf("Erro de leitura!\n");
 
-    v = malloc(tam * sizeof(int));
+
+
+
+
+
+int *getRecords()
+{
+    int *v = (int*)malloc(sizeof(int)*11);
+    for(int i=0; i<11; i++)
+        v[i] = -1;
+    FILE *arq;
+    arq = fopen("./scores/records.txt", "r");
+    if (arq == NULL) printf("Erro de leitura!\n");
+    int cont = 0;
+    while(!feof(arq))
+        fscanf(arq, "%d", &v[cont++]);
     
-    for (int i = 0; i < tam; i++) fscanf(arq, "%d", &v[i]);
-    for (int j = 0; j < tam; j++) printf("%d\n", v[j]);
+    
     fclose(arq);
-    return *v;
+    return v;
 }
-int ordenarRecords(int *v,int tam)
+
+int *ordenarRecords(int *v,int tam)
 {
     for (int i = 1; i < tam;i++)
     {
@@ -197,20 +269,35 @@ int ordenarRecords(int *v,int tam)
     }
     return v;
 }
-void registraScore(int *scoret){
-	FILE*pont_records;
 
-	pont_records=fopen("inputs\records.txt","w");
+void registraScore(int score){
+	int *v = getRecords();
+    int lastPosition = 0;
+    for(int i=0; i<11; i++)
+        if(v[i]==-1)
+            lastPosition = i;
+    v[lastPosition] = score;
+    v = ordenarRecords(v, lastPosition+1);
+	FILE *f = fopen("./scores/records.txt", "w");
+    for(int i=0; i<10; i++)
+        fprintf(f, "%d\n", v[i]);
+    fclose(f);
 
-	if (pont_records==NULL){
-		printf("Erro na abertura!\n");
-		return 1;
-	}
-
-	fprintf(pont_arq,"%d",*scoret);
-	fclose(pont_arq);
 }
-*/
+
+void showHighScores(){
+    int *v = getRecords();
+    for(int i=0; i<10; i++){
+        if(v[i]!=-1)
+            printf("%d. %d\n", i+1, v[i]);
+    }
+    
+}
+
+
+
+
+
 void printArq(Item *data){
     for(int i=0; i<numItens; i++){
         if(i%5==0)

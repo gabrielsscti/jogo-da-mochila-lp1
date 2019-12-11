@@ -1,0 +1,14 @@
+[2019-12-11 11:55:17.591] [sharedprocess] [info] main {"machineId":"64b5b3d7b2aa16be2da2d0e0163d7f4e853f41152ff563bf1d52931e6f763dd8","windowId":2}
+[2019-12-11 11:55:57.582] [sharedprocess] [info] Starting to clean up unused language packs.
+[2019-12-11 15:34:43.039] [sharedprocess] [info] Installing extension: ms-vscode.cpptools
+[2019-12-11 15:34:43.817] [sharedprocess] [info] Installing extension: austin.code-gnu-global
+[2019-12-11 15:34:44.550] [sharedprocess] [info] Downloaded extension: austin.code-gnu-global /tmp/19b9fca9-cde4-446a-8ca4-f4392139e87a
+[2019-12-11 15:34:44.695] [sharedprocess] [info] Extracted extension to /root/.vscode/extensions/.austin.code-gnu-global-0.2.2: austin.code-gnu-global
+[2019-12-11 15:34:44.697] [sharedprocess] [info] Renamed to /root/.vscode/extensions/austin.code-gnu-global-0.2.2
+[2019-12-11 15:34:44.699] [sharedprocess] [info] Installation completed. austin.code-gnu-global
+[2019-12-11 15:34:44.742] [sharedprocess] [info] Extensions installed successfully: austin.code-gnu-global
+[2019-12-11 15:34:46.888] [sharedprocess] [info] Downloaded extension: ms-vscode.cpptools /tmp/47f5494c-219b-4a33-8858-3c51c940280f
+[2019-12-11 15:34:48.446] [sharedprocess] [info] Extracted extension to /root/.vscode/extensions/.ms-vscode.cpptools-0.26.2: ms-vscode.cpptools
+[2019-12-11 15:34:48.448] [sharedprocess] [info] Renamed to /root/.vscode/extensions/ms-vscode.cpptools-0.26.2
+[2019-12-11 15:34:48.455] [sharedprocess] [info] Installation completed. ms-vscode.cpptools
+[2019-12-11 15:34:48.513] [sharedprocess] [info] Extensions installed successfully: ms-vscode.cpptools
