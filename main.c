@@ -50,13 +50,13 @@ void start()
                 {
                     int escolha=-1, weightLeft = tamMochila, quantItensEscolhidos=0;
                     int *itensEscolhidos = NULL;
-										int scoret=getScore(dadosFase, itensEscolhidos, quantItensEscolhidos);
+					//int scoret=getScore(dadosFase, itensEscolhidos, quantItensEscolhidos);
+                    //printf("scoret: %d\n",scoret);
                     while(escolha!=0 && weightLeft!=0){
                         printArq(dadosFase);
-                        printf("\nPeso sobrando: %d\t Pontuação Atual: %d", weightLeft,scoret);
-                        printf("Escolha um item de 1 à %d (digite 0 para encerrar gameplay)", numItens);
+                        //printf("\nPeso sobrando: %d\t Pontuação Atual: %d\n", weightLeft,scoret);
+                        printf("Escolha um item de 1 à %d (digite 0 para encerrar gameplay)\n", numItens);
                         scanf("%d", &escolha);
-												scoret=getScore(dadosFase, itensEscolhidos, quantItensEscolhidos);
                         if(escolha!=0){
                             if(!isItemEscolhido(itensEscolhidos, quantItensEscolhidos, escolha-1)){
                                 int temp = escolha-1;
@@ -77,12 +77,17 @@ void start()
                             }else{
                                 clearScreen();
                                 printf("Item %d já foi escolhido. Escolha outro!\n", escolha);
-                            }
+                            }/*
+                                for(int i=0;i<quantItensEscolhidos;i++) printf("%d",itensEscolhidos[i]);
+                                printf("%d",quantItensEscolhidos);
+                                */
                         }
+                        
                     }
-										printf("Pontuação Total: %d\n",scoret);
-                   // printf("%d", getScore(dadosFase, itensEscolhidos, quantItensEscolhidos));
-										//if (scoret>highscore) registraScore(scoret);
+
+					//printf("Pontuação Total: %d\n",scoret);
+                    printf("score: %d\n", getScore(dadosFase, itensEscolhidos, quantItensEscolhidos));
+					//if (scoret>highscore) registraScore(scoret);
                     //Mostra o score, salva no arquivo records.txt, se for um recorde
                 }
                 else if (op == 2)
@@ -127,32 +132,7 @@ int getScore(Item* data, int* itensEscolhidos, int quantItensEscolhidos){
         score += (data+(*(itensEscolhidos+i)))->valor;
     return score;   
 }
-//ideias para a função de salvar o score
-/*
-int saveScore(){
-	static tam=1;
-	int *ptr_vector_score;
-	ptr_vector_score = (int *)malloc(sizeof(int));
-	ptr_vector_score[tam]= getScore();
-	FILE*records;
-	records=fopen("\inputs\records.txt","w");
-	fprint(ptr_vector_score[tam]);
-	tam++;
-	fclose(records);
-	free(ptr_vector_score);
-}
-*/
-/*
-int ordenateRecords(){
-	int tam;
-	FILE*records;
-	records=fopen("\inputs\records.txt","r");
-	char *ptr_ordnt_score;
-	ptr_ordnt_score=(int*)malloc(sizeof(int));
-	fgets(ptr_ordnt_score,sizeof(ptr_ordnt_score),records);
-	//codigo de ordenar vetor
-}
-*/
+
 Item * getArq(int fase)
 {
     FILE *arq;
@@ -187,7 +167,7 @@ Item * getArq(int fase)
     fclose(arq);
     return itens;
 }
-
+/*
 int getRecords(int *v, int tam)
 {
     FILE *arq;
@@ -220,7 +200,7 @@ int ordenarRecords(int *v,int tam)
 void registraScore(int *scoret){
 	FILE*pont_records;
 
-	pont_records=fopen("\inputs\records.txt","w");
+	pont_records=fopen("inputs\records.txt","w");
 
 	if (pont_records==NULL){
 		printf("Erro na abertura!\n");
@@ -230,7 +210,7 @@ void registraScore(int *scoret){
 	fprintf(pont_arq,"%d",*scoret);
 	fclose(pont_arq);
 }
-
+*/
 void printArq(Item *data){
     for(int i=0; i<numItens; i++){
         if(i%5==0)
@@ -239,7 +219,6 @@ void printArq(Item *data){
         printf("Item %d: %dkg\tR$%d | ", i+1, (data+i)->peso, (data+i)->valor);
         
     }
-    printf("%n");
 }
 
 void init()
@@ -249,7 +228,7 @@ void init()
 
 void clearScreen()
 {
-    system("cls");
+//    system("clear");
 }
 
 void blankLine()
@@ -274,3 +253,13 @@ int selecionarFase()
         else erro();
     }
 }
+/*
+int getScore2(Item* item,int quantItensEscolhidos,int ){
+    Item *itema;
+    if (quantItensEscolhidos>0) {
+        for(i=0;i<quantItensEscolhidos;i++){
+            itema=item[i];
+        }
+    }
+}
+*/
