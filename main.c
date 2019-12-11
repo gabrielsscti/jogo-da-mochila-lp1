@@ -48,14 +48,15 @@ void start()
                 Item *dadosFase = getArq(fase);
                 if (op == 1)
                 {
-                    
                     int escolha=-1, weightLeft = tamMochila, quantItensEscolhidos=0;
                     int *itensEscolhidos = NULL;
+										int scoret=getScore(dadosFase, itensEscolhidos, quantItensEscolhidos);
                     while(escolha!=0 && weightLeft!=0){
                         printArq(dadosFase);
-                        printf("\nPeso sobrando: %d\n", weightLeft);
-                        printf("Escolha um item de 1 à %d(0 para encerrar gameplay)", numItens);
+                        printf("\nPeso sobrando: %d\t Pontuação Atual: %d", weightLeft,scoret);
+                        printf("Escolha um item de 1 à %d (digite 0 para encerrar gameplay)", numItens);
                         scanf("%d", &escolha);
+												scoret=getScore(dadosFase, itensEscolhidos, quantItensEscolhidos);
                         if(escolha!=0){
                             if(!isItemEscolhido(itensEscolhidos, quantItensEscolhidos, escolha-1)){
                                 int temp = escolha-1;
@@ -79,7 +80,9 @@ void start()
                             }
                         }
                     }
-                    printf("%d", getScore(dadosFase, itensEscolhidos, quantItensEscolhidos));
+										printf("Pontuação Total: %d\n",scoret);
+                   // printf("%d", getScore(dadosFase, itensEscolhidos, quantItensEscolhidos));
+										//if (scoret>highscore) registraScore(scoret);
                     //Mostra o score, salva no arquivo records.txt, se for um recorde
                 }
                 else if (op == 2)
@@ -185,6 +188,48 @@ Item * getArq(int fase)
     return itens;
 }
 
+int getRecords(int *v, int tam)
+{
+    FILE *arq;
+    arq = fopen("./inputs/records.txt", "r");
+    if (arq == NULL) printf("Erro de leitura!\n");
+
+    v = malloc(tam * sizeof(int));
+    
+    for (int i = 0; i < tam; i++) fscanf(arq, "%d", &v[i]);
+    for (int j = 0; j < tam; j++) printf("%d\n", v[j]);
+    fclose(arq);
+    return *v;
+}
+int ordenarRecords(int *v,int tam)
+{
+    for (int i = 1; i < tam;i++)
+    {
+        for (int j = 0; j < i; j++)
+        {
+            if (v[i] > v[j])
+            {
+                int aux = v[i];
+                v[i] = v[j];
+                v[j] = aux;
+            }
+        }
+    }
+    return v;
+}
+void registraScore(int *scoret){
+	FILE*pont_records;
+
+	pont_records=fopen("\inputs\records.txt","w");
+
+	if (pont_records==NULL){
+		printf("Erro na abertura!\n");
+		return 1;
+	}
+
+	fprintf(pont_arq,"%d",*scoret);
+	fclose(pont_arq);
+}
 
 void printArq(Item *data){
     for(int i=0; i<numItens; i++){
@@ -213,7 +258,7 @@ void blankLine()
 }
 
 void erro(){
-    printf("Erro\n");
+    printf("Erro, digite um valor válido.\n");
 }
 
 int selecionarFase()
@@ -222,7 +267,7 @@ int selecionarFase()
     while (1)
     {
         blankLine();
-        printf("Por favor, selecione uma fase de 1 a 5(0 para voltar).\n");
+        printf("Por favor, selecione uma fase de 1 a 5 (pressione 0 para voltar).\n");
         scanf("%d", &fase);
         if (fase >= 0 && fase <= 5)
             return fase;

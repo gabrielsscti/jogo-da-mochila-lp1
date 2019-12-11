@@ -1,0 +1,16 @@
+language = "bash"
+run = "echo hello word"
+
+int getRecords(int *v, int tam)
+{
+    FILE *arq;
+    arq = fopen("./inputs/records.txt", "r");
+    if (arq == NULL) printf("Erro de leitura!\n");
+
+    v = malloc(tam * sizeof(int));
+    
+    for (int i = 0; i < tam; i++) fscanf(arq, "%d", &v[i]);
+    for (int j = 0; j < tam; j++) printf("%d\n", v[j]);
+    
+    return *v;
+}
